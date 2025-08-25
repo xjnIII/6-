@@ -1,4 +1,3 @@
-
 简介：
 
 改造的6关节机械臂，使用ESP32主控的SimpleFOC驱动板，AS5047P磁编码，无线通讯
@@ -10,8 +9,6 @@
 远程控制，树莓派作为服务器，远程操控
 
 # 7 关节机械臂控制系统（ESP-NOW/串口）
-
-
 
 本项目提供一套基于 Python 的 7 自由度机械臂控制与演示系统，包含：
 - 桌面 GUI（PySide6）集成：电机控制、轨迹显示、G-code 处理
@@ -53,14 +50,13 @@
     - gcode_widget.py：G-code 界面（OptimizedGCodeWidget）
     - gcode_processor.py：G-code 解析/执行（OptimizedGCodeProcessor）
     - ik_solver.py：IK 求解器（IKPySolver，基于 ikpy）
-    - drag_programming.py：拖拽编程（占位/可扩展）
+    - drag_programming.py：图形编程（占位/可扩展）
     - trajectory_display.py：轨迹显示（占位/可扩展）
   - utils/serial_comm.py：串口管理器
   - main.py：应用入口（含 main()）
 - serial_xyz_sender.py：遗留版 Tkinter Demo（含 ikpy 链配置、手动/手柄/G-code 演示）
 - robot_arm_test.gcode：示例 G-code
 - robotarm.PNG：机械臂图片（README 引用）
-
 
 ## 快速开始
 
@@ -97,7 +93,6 @@
    - G-code 中的 XYZ（单位：mm）会通过 IK 求解 7 轴关节角（度）
    - 按齿轮比（默认 50）转换为“电机轴角度”后，以逗号分隔并换行发送
 
-
 ## G-code 支持（节选）
 
 - G0/G1：直线移动，解析 X/Y/Z/F（单位 mm，G20 时英寸会转换为 mm）
@@ -110,7 +105,6 @@
 
 执行期间将高亮当前行、更新进度，并同步轨迹显示（若可用）。
 
-
 ## 逆运动学说明（ik_solver.py）
 
 - 基于 `ikpy` 的 `Chain + URDFLink` 定义，链长默认每段 150mm（0.15m）
@@ -119,7 +113,3 @@
 - 如你的实际连杆尺寸不同，请在 `IKPySolver._create_robot_arm()` 中调整 `link_length_m`
 - 如坐标系/旋转轴有偏差，可修改各 `URDFLink` 的 `rotation` 配置或在发送前做轴映射
 
-
-## 串口协议与到位等待（节选）
-
-- 发送：7 个角度（度）× 齿轮比（默认 50），形如：
