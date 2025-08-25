@@ -4,7 +4,7 @@ Current Features:
 Manual control (including mouse, keyboard, and joystick).
 Automatic control (including GCode and visual recognition).
 Remote control (using a Raspberry Pi as a server for remote operation).
-# 7 关节机械臂控制系统（ESP-NOW/串口）
+
 
 This project provides a Python-based 7-DOF robotic arm control and demonstration system, including:
 - Desktop GUI (PySide6) integration: motor control, trajectory display, and G-code processing
