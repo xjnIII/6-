@@ -15,7 +15,7 @@ This project provides a Python-based 7-DOF robotic arm control and demonstration
 
 This system is suitable for quickly verifying the motion path, communication link, and G-code workflow of a 7-axis robotic arm.
 
-![Robotic Arm](robotarm.PNG)
+![Robotic Arm](robotcarm.PNG)
 ## Main Functions
 
 - Motor Control
