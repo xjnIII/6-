@@ -1,115 +1,108 @@
-简介：
-
-改造的6关节机械臂，使用ESP32主控的SimpleFOC驱动板，AS5047P磁编码，无线通讯
-
-目前功能：
-
-手动控制，包括鼠标，键盘，手柄
-自动控制，包括gcode，视觉识别
-远程控制，树莓派作为服务器，远程操控
-
+Introduction:
+This is a modified 6-joint robotic arm, using an ESP32-based SimpleFOC driver board, an AS5047P magnetic encoder, and wireless communication.
+Current Features:
+Manual control (including mouse, keyboard, and joystick).
+Automatic control (including GCode and visual recognition).
+Remote control (using a Raspberry Pi as a server for remote operation).
 # 7 关节机械臂控制系统（ESP-NOW/串口）
 
-本项目提供一套基于 Python 的 7 自由度机械臂控制与演示系统，包含：
-- 桌面 GUI（PySide6）集成：电机控制、轨迹显示、G-code 处理
-- G-code 解析、执行（支持重复/单步/暂停/停止）
-- 逆运动学（IKPy）求解与串口发送（ESP-NOW/串口）
-- 实时反馈解析与到位等待
-- 可选的遗留演示版（Tkinter）应用
+This project provides a Python-based 7-DOF robotic arm control and demonstration system, including:
+- Desktop GUI (PySide6) integration: motor control, trajectory display, and G-code processing
+- G-code parsing and execution (supporting repeat/single-step/pause/stop)
+- Inverse kinematics (IKPy) solving and serial transmission (ESP-NOW/serial port)
+- Real-time feedback parsing and position waiting
+- Optional legacy demo (Tkinter) application
 
-该系统适用于快速验证 7 轴机械臂的运动路径、通信链路与 G-code 工作流。
+This system is suitable for quickly verifying the motion path, communication link, and G-code workflow of a 7-axis robotic arm.
 
 ![Robotic Arm](robotarm.PNG)
-## 主要功能
+## Main Functions
 
-- 电机控制（Motor Control）
-  - 选择“实物关节”安全发送
-  - 反馈显示（位置/电压），串口断开自动清空
-- G-code 解析与执行（G-code Processor/Widget）
-  - 预处理
-  - 支持 G0/G1（直线移动）、G20/G21（单位切换）、G90/G91（绝对/相对）、G4（停顿）等
-  - 执行控制：开始、暂停、停止、单步、重复次数、无限循环
-  - 进度显示、当前行高亮、轨迹显示（matplotlib，可选）
-  - IK 求解器接入（IKPy），按 XYZ 求解 7 轴关节角
-  - 到位等待：基于电机1反馈（FB），含超时保护与估算等待回退
-- 逆运动学（IK）
-  - 复用 `ikpy` 的链路定义，输入 XYZ 为毫米（mm）
-  - 使用上次解作为初值，提升收敛与稳定性
-- 串口通信（Serial/ESP-NOW）
-  - 串口管理、连接/断开、端口刷新
-  - 解析反馈格式：“FB: motor_id, position, voltage”
-  - 发送协议：7 个角度（度）乘以齿轮比（默认 50）
+- Motor Control
+- Select "Real Joint" for secure transmission
+- Feedback display (position/voltage), automatically cleared upon serial port disconnection
+- G-code parsing and execution (G-code Processor/Widget)
+- Preprocessing
+- Supports G0/G1 (linear movement), G20/G21 (unit switching), G90/G91 (absolute/relative), G4 (pause), etc.
+- Execution control: start, pause, stop, single step, repeat count, infinite loop
+- Progress display, current line highlighting, trajectory display (matplotlib, optional)
+- IK solver integration (IKPy), solving 7-axis joint angles based on X, Y, and Z
+- Waiting for in-position: Based on motor 1 feedback (FB), with timeout protection and estimated wait fallback
+- Inverse Kinematics (IK)
+- Reuses `ikpy` link definitions, inputting X, Y, and Z = mm
+- Use the previous solution as the initial value to improve convergence and stability
+- Serial communication (Serial/ESP-NOW)
+- Serial port management, connect/disconnect, and port refresh
+- Parsing feedback format: "FB: motor_id, position, voltage"
+- Sending protocol: 7 angles (degrees) multiplied by the gear ratio (default 50)
 
-
-## 目录结构（摘录）
+## Directory structure (excerpt)
 
 - robotic_arm_modular/
-  - ui/main_window.py：主窗口与模块集成、串口 UI、实物关节同步
-  - modules/
-    - motor_control.py：电机控制 UI
-    - gcode_widget.py：G-code 界面（OptimizedGCodeWidget）
-    - gcode_processor.py：G-code 解析/执行（OptimizedGCodeProcessor）
-    - ik_solver.py：IK 求解器（IKPySolver，基于 ikpy）
-    - drag_programming.py：图形编程（占位/可扩展）
-    - trajectory_display.py：轨迹显示（占位/可扩展）
-  - utils/serial_comm.py：串口管理器
-  - main.py：应用入口（含 main()）
-- serial_xyz_sender.py：遗留版 Tkinter Demo（含 ikpy 链配置、手动/手柄/G-code 演示）
-- robot_arm_test.gcode：示例 G-code
-- robotarm.PNG：机械臂图片（README 引用）
+- ui/main_window.py: Main window and module integration, serial UI, physical joint synchronization
+- modules/
+- motor_control.py: Motor control UI
+- gcode_widget.py: G-code interface (OptimizedGCodeWidget)
+- gcode_processor.py: G-code parsing/execution (OptimizedGCodeProcessor)
+- ik_solver.py: IK solver (IKPySolver, based on ikpy)
+- drag_programming.py: Graphics programming (placeholder/expandable)
+- trajectory_display.py: Trajectory display (placeholder/expandable)
+- utils/serial_comm.py: Serial port manager
+- main.py: Application entry point (including main())
+- serial_xyz_sender.py: Legacy Tkinter demo (including ikpy chain configuration, manual/handle/G-code demonstration)
+- robot_arm_test.gcode: Sample G-code
+- robotarm.PNG: Robotic arm image (referenced in the README)
 
-## 快速开始
+## Quick Start
 
-- 环境要求
-  - Python 3.10+
-  - 依赖：PySide6、ikpy、numpy、pyserial、matplotlib（可选，用于轨迹显示）
+- Requirements
+- Python 3.10+
+- Dependencies: PySide6, ikpy, numpy, pyserial, matplotlib (optional, for trajectory display)
 
-- 启动 GUI（PySide6 版本）
-  - 运行 `robotic_arm_modular/main.py` 启动主界面
-  - 串口连接后，进入“G-code”标签页加载并执行 G-code
+- Launch the GUI (PySide6 version)
+- Run `robotic_arm_modular/main.py` to launch the main interface
+- After connecting to the serial port, enter the "G-code" tab to load and execute G-code
 
-- 遗留演示（Tkinter 版本）
-  - `serial_xyz_sender.py` 为独立的演示工具（含完整 IK/G-code/手柄/摄像头示例）
-  - 可用于对比或迁移配置
+- Legacy Demo (Tkinter Version)
+- `serial_xyz_sender.py` is a standalone demo tool (including complete IK/G-code/controller/camera examples)
+- Can be used for comparison or configuration migration
 
+## Instructions (PySide6 GUI)
 
-## 使用说明（PySide6 GUI）
+1. Connecting to the Serial Port
+- Open the application → Select the port → Click "Connect"
+- The status bar displays the connection status; disconnection automatically clears the feedback
 
-1. 连接串口
-   - 打开应用 → 选择端口 → 点击“连接”
-   - 状态栏显示连接状态；断连会自动清空反馈
+2. Select "Physical Joint"
+- The "Physical Joint" drop-down box at the top specifies which joints will be sent angles.
+- Protect hardware: Unselected joints will be sent as 0
 
-2. 选择“实物关节”
-   - 顶部“实物关节”下拉框用于指定当前仅对哪个关节发送角度
-   - 保护硬件：未选中的关节发送 0
+3. Loading and Executing G-code
+- In the "G-code" tab → Click "Load File" and select .gcode/.nc/.tap/.txt
+- Click "Start" to execute, with options for pause/stop/single-stepping
+- You can select the number of repetitions or start an infinite loop
+- If Matplotlib is installed, a 3D trajectory will be displayed on the right
 
-3. 加载并执行 G-code
-   - 在“G-code”标签页 → 点击“加载文件”选择 .gcode/.nc/.tap/.txt
-   - 点击“开始”执行，可暂停/停止/单步
-   - 可选择重复次数或开启无限循环
-   - 如安装 matplotlib，会在右侧显示 3D 轨迹
+4. IK Solving and Sending
+- X, Y, and Z values ​​(units: mm) in G-code are solved for 7-axis joint angles (degrees) using IK.
+- After converting to "motor axis angles" based on the gear ratio (default 50), they are sent as comma-separated lines.
 
-4. IK 求解与发送
-   - G-code 中的 XYZ（单位：mm）会通过 IK 求解 7 轴关节角（度）
-   - 按齿轮比（默认 50）转换为“电机轴角度”后，以逗号分隔并换行发送
+## G-code Support (Excerpt)
 
-## G-code 支持（节选）
+- G0/G1: Linear moves, parsing X/Y/Z/F (units: mm; inches are converted to mm for G20)
+- G2/G3: Arcs (currently simplified to linear moves)
+- G4: Dwell/Hold
+- G20/G21: Inches/Millimeters
+- G90/G91: Absolute/Relative coordinates
+- M0/M1: Dwell (basic)
+- M2/M30: End of program
 
-- G0/G1：直线移动，解析 X/Y/Z/F（单位 mm，G20 时英寸会转换为 mm）
-- G2/G3：圆弧（当前简化为直线移动执行）
-- G4：停顿/保压
-- G20/G21：英寸/毫米
-- G90/G91：绝对/相对坐标
-- M0/M1：暂停（基本）
-- M2/M30：程序结束
+During execution, the current line is highlighted, progress is updated, and the trajectory display is synchronized (if available).
 
-执行期间将高亮当前行、更新进度，并同步轨迹显示（若可用）。
+## Inverse Kinematics Description (ik_solver.py)
 
-## 逆运动学说明（ik_solver.py）
-
-- 基于 `ikpy` 的 `Chain + URDFLink` 定义，链长默认每段 150mm（0.15m）
-- 目标坐标输入单位为毫米（mm），内部自动转换为米（m）
-- 返回 8 维弧度解（含 OriginLink），发送前会取 [1:8] 并转角度
-- 如你的实际连杆尺寸不同，请在 `IKPySolver._create_robot_arm()` 中调整 `link_length_m`
-- 如坐标系/旋转轴有偏差，可修改各 `URDFLink` 的 `rotation` 配置或在发送前做轴映射
-
+- Based on the `Chain + URDFLink` definition in `ikpy`, the default chain length is 150mm (0.15m) per segment.
+- Target coordinate input units are millimeters (mm), which are automatically converted to meters (m) internally.
+- Returns an 8-dimensional radian solution (including OriginLink). A [1:8] angle is taken and transformed before sending.
+- If your actual link dimensions are different, adjust `link_length_m` in `IKPySolver._create_robot_arm()`.
+- If there are discrepancies in the coordinate system/rotation axis, modify the `rotation` configuration of each `URDFLink` or perform axis mapping before sending.
